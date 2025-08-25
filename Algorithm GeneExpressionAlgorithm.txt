@@ -1,0 +1,63 @@
+Algorithm GeneExpressionAlgorithm
+Input: fitness_function, population_size, num_genes, mutation_rate, crossover_rate, max_generations
+Output: best_solution_found
+
+BEGIN
+    // Step 1: Initialize Population
+    population ← InitializePopulation(population_size, num_genes)
+
+    best_solution ← null
+    best_fitness ← -∞  // or +∞ if minimizing
+
+    generation ← 0
+
+    WHILE generation < max_generations DO
+
+        // Step 2: Evaluate Fitness
+        fitness_values ← []
+        FOR each individual IN population DO
+            solution ← GeneExpression(individual)           // Translate gene sequence to solution
+            fitness ← fitness_function(solution)
+            fitness_values.append(fitness)
+
+            IF fitness better than best_fitness THEN
+                best_fitness ← fitness
+                best_solution ← solution
+            END IF
+        END FOR
+
+        // Step 3: Selection
+        selected_parents ← Selection(population, fitness_values)
+
+        // Step 4: Crossover
+        offspring ← []
+        FOR i FROM 0 TO length(selected_parents) STEP 2 DO
+            parent1 ← selected_parents[i]
+            parent2 ← selected_parents[i+1]
+
+            IF RandomNumber(0,1) < crossover_rate THEN
+                child1, child2 ← Crossover(parent1, parent2)
+            ELSE
+                child1 ← parent1
+                child2 ← parent2
+            END IF
+
+            offspring.append(child1)
+            offspring.append(child2)
+        END FOR
+
+        // Step 5: Mutation
+        FOR each child IN offspring DO
+            child ← Mutate(child, mutation_rate)
+        END FOR
+
+        // Step 6: Create New Population
+        population ← offspring
+
+        generation ← generation + 1
+
+    END WHILE
+
+    RETURN best_solution
+
+END
